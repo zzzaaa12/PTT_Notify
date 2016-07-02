@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import sys
 import urllib
+from send_notify import send_notify_mail
 from HTMLParser import HTMLParser
 
 Target_Boards = ['Gamesale', 'Key_Mou_Pad']
@@ -16,6 +17,7 @@ class ptt_html_parser(HTMLParser):
         self.parse_complete = False
         self.exit_count = 0;
         self.article = {'date':'', 'author':'', 'title':'', 'url':''}
+        self.all_data = ''
 
     def handle_starttag(self, tag, attrs):
         if tag == 'div' and attrs[0][1] == 'r-ent':
@@ -35,9 +37,8 @@ class ptt_html_parser(HTMLParser):
         if tag == 'div' and self.parse_complete:
             self.exit_count = self.exit_count + 1
             if self.exit_count == 3:
-                print self.article['date'] + ' ' + self.article['author'] + ' ' + self.article['title']
-                print '      http://www.ptt.cc' +self.article['url']
-                print ''
+                self.all_data = self.all_data + self.article['date'] + ' ' + self.article['author'] + ' ' + self.article['title'] + \
+                                '\n      http://www.ptt.cc' +  self.article['url'] + '\n\n'
 
     def handle_data(self, data):
         if self.parse_title_and_url:
@@ -59,4 +60,6 @@ for board in Target_Boards:
     parser.feed(urllib.urlopen('https://www.ptt.cc/bbs/' + board + '/index.html').read())
     parser.close()
 
+    print parser.all_data
+    send_notify_mail('PTT notify [' + board + ']', parser.all_data)
     print ''
