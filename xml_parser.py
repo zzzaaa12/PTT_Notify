@@ -1,20 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys
-import urllib
-import requests
-import xml.etree.ElementTree as ET
+import feedparser
 from send_notify import send_notify_mail
 
 Target_Boards = ['Key_Mou_Pad']
 
-xml_data = requests.get('http://rss.ptt.cc/Key_Mou_Pad.xml').content
-fp = open('data.xml', 'w')
-fp.write(xml_data);
-fp.close()
+data = feedparser.parse('http://rss.ptt.cc/Key_Mou_Pad.xml')
+print 'Board: ' +  data['feed']['title'] + '\n' + \
+      'Url: ' + data['feed']['id'] + '\n' + \
+      'Last updated:' + data['feed']['updated'] + '\n'
 
-tree = ET.parse('data.xml')
-root = tree.getroot()
+for item in data['entries']:
+    print item['published'] + ' ' + item['id'] + '\n' + \
+          item['author'] + ' ' + item['title'] + '\n'
 
-for neighbor in root.iter('name'):
-    print neighbor.attrib
