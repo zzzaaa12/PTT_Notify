@@ -5,9 +5,10 @@ import sys
 import time
 import feedparser
 from datetime import datetime
+from datetime import timedelta
 from send_notify import send_notify_mail
 
-AUTO_UPDATE_SECS = 3000
+AUTO_UPDATE_SECS = 300
 BOARD_LIST = ['Key_Mou_Pad', 'HardwareSale', 'Gamesale']
 KEYWORD_LIST = [u'鍵帽', u'鍵盤', 'PS4']
 AUTHOR_LIST = ['']
@@ -15,7 +16,7 @@ AUTHOR_LIST = ['']
 
 class ptt_parser:
     def __init__(self):
-        self.article_list = []
+        self.last_updated = datetime.now() + timedelta(hours = -1)
 
     def search_data(self, author, title):
         for x in AUTHOR_LIST:
@@ -44,7 +45,7 @@ class ptt_parser:
             url = item['id']
             publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%SZ')
 
-            if (now - publish_time).total_seconds() < AUTO_UPDATE_SECS:
+            if (publish_time - self.last_updated).total_seconds() > 0:
                 time_str = publish_time.strftime('%m/%d %H:%M:%S')
 
                 if self.search_data(author, title):
@@ -74,16 +75,18 @@ class ptt_parser:
         self.print_list_info()
 
         while True:
-            for x in BOARD_LIST:
-                self.parse_ptt_board(x)
+            for board in BOARD_LIST:
+                self.parse_ptt_board(board)
+
                 if len(self.article_list):
-                    print x + ':'
+                    print board + ':'
                 for article in self.article_list:
                     print '    ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
                     print '    ' + article['url'] + '\n'
 
+            self.last_updated = datetime.now()
             time.sleep(AUTO_UPDATE_SECS)
-#            os.system('clear || cls')
+            os.system('clear || cls')
 
 
 def main():
