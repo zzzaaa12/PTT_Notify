@@ -67,8 +67,8 @@ class ptt_parser:
                 keyword_str = "'" + KEYWORD_LIST[i] + "'"
 
         print 'Board List: ' + str(BOARD_LIST)
-        print 'Keyword: ' + '[' + keyword_str + ']'
-        print 'Author: ' + str(AUTHOR_LIST) + '\n'
+        print 'Keyword List: ' + '[' + keyword_str + ']'
+        print 'Author List: ' + str(AUTHOR_LIST)
 
 
     def run(self):
@@ -91,8 +91,8 @@ class ptt_parser:
             self.last_updated = datetime.now()
 
             if len(mail_str):
-                #print mail_str
-                send_notify_mail('PTT Keyword notify', mail_str)
+                #print 'mail content: ' + mail_str
+                send_notify_mail('PTT Notify [' + self.last_updated.strftime('%m/%d %H:%M')  + ']', mail_str)
                 print 'notify mail sent!!!'
 
             time.sleep(AUTO_UPDATE_SECS)
