@@ -80,18 +80,20 @@ class ptt_parser:
                 self.parse_ptt_board(board)
 
                 if len(self.article_list):
-                    mail_str = mail_str + board + ':'
+                    mail_str = mail_str + board + ':\n'
                     print board + ':'
                 for article in self.article_list:
-                    mail_str = mail_str + '    ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
-                    mail_str = mail_str + '    ' + article['url'] + '\n'
+                    mail_str = mail_str + '    ' + article['time'] + ' '  + article['author'] + ' ' + article['title'] + '\n'
+                    mail_str = mail_str + '    ' + article['url'] + '\n\n'
                     print '    ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
                     print '    ' + article['url'] + '\n'
 
             self.last_updated = datetime.now()
 
             if len(mail_str):
-                send_notify_mail('PTT notify [' + board + ']', mail_str)
+                #print mail_str
+                send_notify_mail('PTT Keyword notify', mail_str)
+                print 'notify mail sent!!!'
 
             time.sleep(AUTO_UPDATE_SECS)
             os.system('clear || cls')
