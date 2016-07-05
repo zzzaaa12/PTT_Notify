@@ -89,10 +89,13 @@ class ptt_parser:
                     print '    ' + article['url'] + '\n'
 
             self.last_updated = datetime.now()
+            f = open('last_updated', 'w')
+            f.write(self.last_updated.strftime('%m/%d %H:%M:%S'))
+            f.close()
 
             if len(mail_str):
                 #print 'mail content: ' + mail_str
-                send_notify_mail('PTT Notify [' + self.last_updated.strftime('%m/%d %H:%M')  + ']', mail_str)
+                send_notify_mail('PTT new article [' + self.last_updated.strftime('%m/%d %H:%M') + ']', mail_str)
                 print 'notify mail sent!!!'
 
             time.sleep(AUTO_UPDATE_SECS)

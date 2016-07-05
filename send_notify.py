@@ -16,7 +16,7 @@ def send_notify_mail(subject, content):
         server.login(from_addr, smtp_passwd)
 
         msg = MIMEText(content, 'plain', 'utf-8')
-        msg['From'] = from_addr
+        msg['From'] = 'PTT Notify<' + from_addr + '>'
         msg['To'] = to_addr
         msg['Subject'] = Header(subject, 'utf-8').encode()
 
