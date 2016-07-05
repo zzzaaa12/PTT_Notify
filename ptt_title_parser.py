@@ -96,7 +96,7 @@ class ptt_parser:
             if len(mail_str):
                 #print 'mail content: ' + mail_str
                 send_notify_mail('PTT new article [' + self.last_updated.strftime('%m/%d %H:%M') + ']', mail_str)
-                print 'notify mail sent!!!'
+                print 'notify mail sent (' + self.last_updated.strftime('%m/%d %H:%M') + ')'
 
             time.sleep(AUTO_UPDATE_SECS)
             os.system('clear || cls')
