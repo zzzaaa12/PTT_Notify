@@ -14,8 +14,7 @@ SHOW_ALL_BOARD = ['HardwareSale']
 KEYWORD_LIST = [u'鍵帽', u'鍵盤']
 AUTHOR_LIST = ['']
 
-
-class ptt_parser:
+class PttXmlParser:
     def __init__(self):
         self.last_updated = datetime.now() + timedelta(hours = -1)
 
@@ -111,7 +110,7 @@ class ptt_parser:
 
 
 def main():
-    parser = ptt_parser()
+    parser = PttXmlParser()
     parser.run()
 
 
