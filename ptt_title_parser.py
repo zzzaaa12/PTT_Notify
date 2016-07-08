@@ -10,8 +10,8 @@ from send_notify import send_notify_mail
 
 AUTO_UPDATE_SECS = 300
 BOARD_LIST = ['Key_Mou_Pad', 'HardwareSale', 'DC_SALE', 'CompBook']
-SHOW_ALL_BOARD = ['HardwareSale']
-KEYWORD_LIST = [u'鍵帽', u'鍵盤']
+SHOW_ALL_BOARD = ['HardwareSale', 'CompBook']
+KEYWORD_LIST = [u'鍵帽', u'鍵盤', u'蛇']
 AUTHOR_LIST = ['']
 
 class PttXmlParser:
@@ -46,7 +46,7 @@ class PttXmlParser:
             publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%SZ')
 
             if (publish_time - self.last_updated).total_seconds() > 0:
-                time_str = publish_time.strftime('%m/%d %H:%M:%S')
+                time_str = publish_time.strftime('%H:%M')
                 if show_all or self.search_data(author, title):
                     article_data = {'board':'', 'author':'', 'title':'', 'url':''} 
                     article_data['board'] = board
@@ -89,7 +89,7 @@ class PttXmlParser:
                     mail_str = mail_str + board + ':\n'
                     print board + ':'
                 for article in self.article_list:
-                    mail_str = mail_str + '    ' + article['time'] + ' '  + article['author'] + ' ' + article['title'] + '\n'
+                    mail_str = mail_str + '    ' + article['time'] + '   '  + article['author'] + ' ' + article['title'] + '\n'
                     mail_str = mail_str + '    ' + article['url'] + '\n\n'
                     print '    ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
                     print '    ' + article['url'] + '\n'
