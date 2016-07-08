@@ -9,8 +9,9 @@ from datetime import timedelta
 from send_notify import send_notify_mail
 
 AUTO_UPDATE_SECS = 300
-BOARD_LIST = ['Key_Mou_Pad', 'HardwareSale', 'Gamesale']
-KEYWORD_LIST = [u'鍵帽', u'鍵盤', 'PS4']
+BOARD_LIST = ['Key_Mou_Pad', 'HardwareSale', 'DC_SALE', 'CompBook']
+SHOW_ALL_BOARD = ['HardwareSale']
+KEYWORD_LIST = [u'鍵帽', u'鍵盤']
 AUTHOR_LIST = ['']
 
 
@@ -28,7 +29,7 @@ class ptt_parser:
         return False
 
 
-    def parse_ptt_board(self, board):
+    def parse_ptt_board(self, board, show_all):
         now = datetime.now()
         data = feedparser.parse('http://rss.ptt.cc/' + board + '.xml')
 
@@ -47,8 +48,7 @@ class ptt_parser:
 
             if (publish_time - self.last_updated).total_seconds() > 0:
                 time_str = publish_time.strftime('%m/%d %H:%M:%S')
-
-                if self.search_data(author, title):
+                if show_all or self.search_data(author, title):
                     article_data = {'board':'', 'author':'', 'title':'', 'url':''} 
                     article_data['board'] = board
                     article_data['author'] = author
@@ -77,7 +77,14 @@ class ptt_parser:
         while True:
             mail_str = ''
             for board in BOARD_LIST:
-                self.parse_ptt_board(board)
+
+                # check show all article or not
+                show_all = False
+                for x in SHOW_ALL_BOARD:
+                    if str(x) == str(board):
+                        show_all = True
+
+                self.parse_ptt_board(board, show_all)
 
                 if len(self.article_list):
                     mail_str = mail_str + board + ':\n'
@@ -90,16 +97,17 @@ class ptt_parser:
 
             self.last_updated = datetime.now()
             f = open('last_updated', 'w')
-            f.write(self.last_updated.strftime('%m/%d %H:%M:%S'))
+            f.write(self.last_updated.strftime('%m/%d %H:%M:%S\n'))
             f.close()
 
             if len(mail_str):
-                #print 'mail content: ' + mail_str
+#                print 'mail content: ' + mail_str
                 send_notify_mail('PTT new article [' + self.last_updated.strftime('%m/%d %H:%M') + ']', mail_str)
                 print 'notify mail sent (' + self.last_updated.strftime('%m/%d %H:%M') + ')'
 
+            print 'updated at ' + self.last_updated.strftime('%m/%d %H:%M:%S')
             time.sleep(AUTO_UPDATE_SECS)
-            os.system('clear || cls')
+#            os.system('clear || cls')
 
 
 def main():
