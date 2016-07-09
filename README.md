@@ -1,9 +1,9 @@
-ptt_article_notify
+PTT article notifier
 ===================
 本專案由 Python 撰寫，主要功能如下：  
 - 定時讀取PTT特定看板的 RSS feed  
 - 過濾RSS內容的標題或作者  
-- 將過濾的結果以mail寄到特定信箱  
+- 將最新的過濾結果以mail寄到收件者信箱  
 
 --------
 **檔案說明**  
