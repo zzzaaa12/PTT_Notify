@@ -8,7 +8,7 @@ ptt_article_notify
 --------
 **檔案說明**  
 - ptt_title_parser.py: 主程式
-- send_notify.py: 發送mail的code，信箱資料填在這邊
+- send_notify.py: 發送mail的code (信箱資料填在這邊)
 
 **注意事項**  
 - 本程式預設讀取間隔時間為五分鐘
