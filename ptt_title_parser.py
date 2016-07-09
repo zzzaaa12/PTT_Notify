@@ -10,8 +10,8 @@ from send_notify import send_notify_mail
 
 AUTO_UPDATE_SECS = 300
 BOARD_LIST = ['Key_Mou_Pad', 'HardwareSale', 'DC_SALE', 'CompBook']
-SHOW_ALL_BOARD = ['HardwareSale', 'CompBook']
-KEYWORD_LIST = [u'鍵帽', u'鍵盤', u'蛇']
+SHOW_ALL_BOARD = ['Key_Mou_Pad', 'CompBook']
+KEYWORD_LIST = [u'鍵帽', u'鍵盤', u'蛇', '7750', '7770']
 AUTHOR_LIST = ['']
 
 class PttXmlParser:
@@ -108,12 +108,13 @@ class PttXmlParser:
 
                 if len(self.article_list):
                     mail_str = mail_str + board + ':\n'
-                    print board + ':'
+                    print '    ' + board + ':'
+
                 for article in self.article_list:
                     mail_str = mail_str + '    ' + article['time'] + '   '  + article['author'] + ' ' + article['title'] + '\n'
                     mail_str = mail_str + '    ' + article['url'] + '\n\n'
-                    print '    ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
-                    print '    ' + article['url'] + '\n'
+                    print '        ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
+                    print '        ' + article['url'] + '\n'
 
             self.last_updated = datetime.now()
             f = open('last_updated', 'w')
