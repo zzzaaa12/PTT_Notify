@@ -17,6 +17,13 @@ AUTHOR_LIST = ['']
 class PttXmlParser:
     def __init__(self):
         self.last_updated = datetime.now() + timedelta(hours = -1)
+        self.board_data = []
+
+    def prepare_board_info(self):
+        for x in BOARD_LIST:
+            data = {'board':'', 'last_updated': datetime.now() + timedelta(hours = -1)}
+            data['board'] = x
+            self.board_data.append(data)
 
     def search_data(self, author, title):
         for x in AUTHOR_LIST:
@@ -37,6 +44,12 @@ class PttXmlParser:
         board_title = data['feed']['title']
         board_url = data['feed']['id']
 
+        # read last_updated
+        for x in self.board_data:
+            if board == x['board']:
+                board_last_updated = x['last_updated']
+                break
+
         # article infomation
         self.article_list = []
         for item in data['entries']:
@@ -45,7 +58,7 @@ class PttXmlParser:
             url = item['id']
             publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%SZ')
 
-            if (publish_time - self.last_updated).total_seconds() > 0:
+            if (publish_time - board_last_updated).total_seconds() > 0:
                 time_str = publish_time.strftime('%H:%M')
                 if show_all or self.search_data(author, title):
                     article_data = {'board':'', 'author':'', 'title':'', 'url':''} 
@@ -55,6 +68,12 @@ class PttXmlParser:
                     article_data['url'] = url
                     article_data['time'] = time_str
                     self.article_list.append(article_data)
+
+        # save last_updated
+        for x in self.board_data:
+            if board == x['board']:
+                x['last_updated'] = board_updated_time
+                break
 
 
     def print_list_info(self):
@@ -72,6 +91,7 @@ class PttXmlParser:
 
     def run(self):
         self.print_list_info()
+        self.prepare_board_info()
 
         while True:
             mail_str = ''
@@ -82,6 +102,7 @@ class PttXmlParser:
                 for x in SHOW_ALL_BOARD:
                     if str(x) == str(board):
                         show_all = True
+                        break
 
                 self.parse_ptt_board(board, show_all)
 
