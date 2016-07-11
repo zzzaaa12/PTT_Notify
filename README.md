@@ -18,9 +18,9 @@ PTT article notifier
   - SHOW_ALL_BOARD：填在這邊的看板，只要有新文章會直接寄信通知  
 
 2. 在 send_notify.py 填寫mail寄件者與收件者資訊：  
-  - from_addr：寄件者mail  
-  - to_addr：收件者mail  
-  - smtp_passwd：收件者mail帳號  
+  - FROM_ADDR：寄件者mail  
+  - TO_ADDR：收件者mail  
+  - SMTP_PASSWD：收件者mail帳號  
 
 3. 直接執行 ptt_title_parser.py 即可  
   
