@@ -9,9 +9,9 @@ from datetime import timedelta
 from send_notify import send_notify_mail
 
 AUTO_UPDATE_SECS = 300
-BOARD_LIST = ['Key_Mou_Pad', 'HardwareSale', 'DC_SALE', 'CompBook']
+BOARD_LIST = ['HardwareSale', 'DC_SALE', 'give']
 SHOW_ALL_BOARD = ['Key_Mou_Pad', 'CompBook']
-KEYWORD_LIST = [u'鍵帽', u'鍵盤', u'蛇', '7750', '7770']
+KEYWORD_LIST = [u'鍵帽', u'鍵盤', '250', '7770', '6670', u'網樂通']
 AUTHOR_LIST = ['']
 
 class PttXmlParser:
@@ -84,6 +84,7 @@ class PttXmlParser:
             elif i == 0:
                 keyword_str = "'" + KEYWORD_LIST[i] + "'"
 
+        print 'Board List (show all): ' + str(SHOW_ALL_BOARD)
         print 'Board List: ' + str(BOARD_LIST)
         print 'Keyword List: ' + '[' + keyword_str + ']'
         print 'Author List: ' + str(AUTHOR_LIST)
@@ -104,11 +105,15 @@ class PttXmlParser:
                         show_all = True
                         break
 
-                self.parse_ptt_board(board, show_all)
+                try:
+                    self.parse_ptt_board(board, show_all)
+                except:
+                    print '        exception detected!!!!'
+                    self.article_list = []
 
                 if len(self.article_list):
-                    mail_str = mail_str + board + ':\n'
-                    print '    ' + board + ':'
+                    mail_str = mail_str + board + u'板：\n'
+                    print '    ' + board + u'板：'
 
                 for article in self.article_list:
                     mail_str = mail_str + '    ' + article['time'] + '   '  + article['author'] + ' ' + article['title'] + '\n'
