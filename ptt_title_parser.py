@@ -9,18 +9,22 @@ from datetime import timedelta
 from send_notify import send_notify_mail
 
 AUTO_UPDATE_SECS = 300
-BOARD_LIST = ['HardwareSale', 'DC_SALE', 'give']
+BOARD_LIST = ['HardwareSale', 'give']
 SHOW_ALL_BOARD = ['Key_Mou_Pad', 'CompBook']
-KEYWORD_LIST = [u'鍵帽', u'鍵盤', '250', '7770', '6670', u'網樂通']
+KEYWORD_LIST = [u'鍵帽', u'鍵盤', 'ducky', u'網樂通']
 AUTHOR_LIST = ['']
 
 class PttXmlParser:
     def __init__(self):
         self.last_updated = datetime.now() + timedelta(hours = -1)
+        self.board_list = BOARD_LIST
         self.board_data = []
+        for x in SHOW_ALL_BOARD:
+            if x not in self.board_list:
+                self.board_list.append(x)
 
     def prepare_board_info(self):
-        for x in BOARD_LIST:
+        for x in self.board_list:
             data = {'board':'', 'last_updated': datetime.now() + timedelta(hours = -1)}
             data['board'] = x
             self.board_data.append(data)
@@ -85,7 +89,7 @@ class PttXmlParser:
                 keyword_str = "'" + KEYWORD_LIST[i] + "'"
 
         print 'Board List (show all): ' + str(SHOW_ALL_BOARD)
-        print 'Board List: ' + str(BOARD_LIST)
+        print 'Board List: ' + str(self.board_list)
         print 'Keyword List: ' + '[' + keyword_str + ']'
         print 'Author List: ' + str(AUTHOR_LIST)
 
@@ -96,7 +100,7 @@ class PttXmlParser:
 
         while True:
             mail_str = ''
-            for board in BOARD_LIST:
+            for board in self.board_list:
 
                 # check show all article or not
                 show_all = False
