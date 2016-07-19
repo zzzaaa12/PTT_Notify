@@ -9,10 +9,10 @@ from datetime import timedelta
 from send_notify import send_notify_mail
 
 AUTO_UPDATE_SECS = 300
-BOARD_LIST = ['HardwareSale', 'give']
-SHOW_ALL_BOARD = ['Key_Mou_Pad', 'CompBook']
-KEYWORD_LIST = [u'鍵帽', u'鍵盤', 'ducky', u'網樂通']
-AUTHOR_LIST = ['']
+BOARD_LIST = ['HardwareSale']
+SHOW_ALL_BOARD = ['Key_Mou_Pad']
+KEYWORD_LIST = [u'鍵盤'] # unicode
+AUTHOR_LIST = ['zzzaaa12']
 
 class PttXmlParser:
     def __init__(self):
