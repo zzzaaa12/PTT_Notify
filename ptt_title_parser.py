@@ -8,6 +8,12 @@ from datetime import datetime
 from datetime import timedelta
 from send_notify import send_notify_mail
 
+# files in this project
+from setting import BOARD_LIST
+from setting import SHOW_ALL_BOARD
+from setting import KEYWORD_LIST
+from setting import AUTHOR_LIST
+
 AUTO_UPDATE_SECS = 300
 BOARD_LIST = ['HardwareSale']
 SHOW_ALL_BOARD = ['Key_Mou_Pad']
