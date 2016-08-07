@@ -111,9 +111,9 @@ class PttXmlParser:
 
                 try:
                     self.parse_ptt_board(board, show_all)
-                except:
-                    print '        exception detected!!!!'
-                    self.article_list = []
+                except Exception as e:
+                    print '\tAn exception occurred at ' + datetime.now().strftime('%m/%d %H:%M:%S')
+                    break
 
                 if len(self.article_list):
                     mail_str = mail_str + board + u'板：\n'
