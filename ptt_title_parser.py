@@ -15,10 +15,6 @@ from setting import KEYWORD_LIST
 from setting import AUTHOR_LIST
 
 AUTO_UPDATE_SECS = 300
-BOARD_LIST = ['HardwareSale']
-SHOW_ALL_BOARD = ['Key_Mou_Pad']
-KEYWORD_LIST = [u'鍵盤'] # unicode
-AUTHOR_LIST = ['zzzaaa12']
 
 class PttXmlParser:
     def __init__(self):
