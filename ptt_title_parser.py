@@ -4,6 +4,7 @@ import os
 import sys
 import time
 import feedparser
+import requests
 from datetime import datetime
 from datetime import timedelta
 from send_notify import send_notify_mail
@@ -41,15 +42,15 @@ class PttXmlParser:
 
 
     def parse_ptt_board(self, board, show_all):
+        got_last_updated_time = False
         now = datetime.now()
-        data = feedparser.parse('http://rss.ptt.cc/' + board + '.xml')
+        r = requests.get('https://www.ptt.cc/atom/' + board + '.xml')
+        data = feedparser.parse(r.text)
 
         # board information
-        board_updated_time = datetime.strptime(data['feed']['updated'], '%Y-%m-%dT%H:%M:%SZ')
         board_title = data['feed']['title']
         board_url = data['feed']['id']
 
-        # read last_updated
         for x in self.board_data:
             if board == x['board']:
                 board_last_updated = x['last_updated']
@@ -61,24 +62,24 @@ class PttXmlParser:
             author = item['author']
             title = item['title']
             url = item['id']
-            publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%SZ')
+            publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%S+08:00')
+
+            # get and save last_updated_time
+            if not got_last_updated_time:
+                last_article_time = publish_time
+                got_last_updated_time = True
+                x['last_updated'] = last_article_time
 
             if (publish_time - board_last_updated).total_seconds() > 0:
-                time_str = publish_time.strftime('%H:%M')
+                # parse articles and compare
                 if show_all or self.search_data(author, title):
                     article_data = {'board':'', 'author':'', 'title':'', 'url':''} 
                     article_data['board'] = board
                     article_data['author'] = author
                     article_data['title'] = title
                     article_data['url'] = url
-                    article_data['time'] = time_str
+                    article_data['time'] = publish_time.strftime('%H:%M')
                     self.article_list.append(article_data)
-
-        # save last_updated
-        for x in self.board_data:
-            if board == x['board']:
-                x['last_updated'] = board_updated_time
-                break
 
 
     def print_list_info(self):
@@ -101,6 +102,7 @@ class PttXmlParser:
 
         while True:
             mail_str = ''
+            got_board_list = ''
             for board in self.board_list:
 
                 # check show all article or not
@@ -113,11 +115,17 @@ class PttXmlParser:
                 try:
                     self.parse_ptt_board(board, show_all)
                 except Exception as e:
+                    print e
                     print '\tAn exception occurred at ' + datetime.now().strftime('%m/%d %H:%M:%S')
                     break
 
                 if len(self.article_list):
                     mail_str = mail_str + board + u'板：\n'
+                    if got_board_list.find(board) == -1:
+                        if len(got_board_list) == 0:
+                            got_board_list = board
+                        else:
+                            got_board_list = got_board_list + '/' + board
                     print '    ' + board + u'板：'
 
                 for article in self.article_list:
@@ -133,7 +141,7 @@ class PttXmlParser:
 
             if len(mail_str):
 #                print 'mail content: ' + mail_str
-                send_notify_mail('PTT new article [' + self.last_updated.strftime('%m/%d %H:%M') + ']', mail_str)
+                send_notify_mail('PTT [' + self.last_updated.strftime('%H:%M') + ']: ' + got_board_list, mail_str)
                 print 'notify mail sent (' + self.last_updated.strftime('%m/%d %H:%M') + ')'
 
             print 'updated at ' + self.last_updated.strftime('%m/%d %H:%M:%S')
