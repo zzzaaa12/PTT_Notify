@@ -27,6 +27,7 @@ class PttXmlParser:
 
     def prepare_board_info(self):
         for x in self.board_list:
+            # get ptt articles in the last hour at first run
             data = {'board':'', 'last_updated': datetime.now() + timedelta(hours = -1)}
             data['board'] = x
             self.board_data.append(data)
@@ -41,10 +42,14 @@ class PttXmlParser:
         return False
 
 
-    def parse_ptt_board(self, board, show_all):
+    def parse_ptt_article(self, board, show_all):
         got_last_updated_time = False
         now = datetime.now()
+
         r = requests.get('https://www.ptt.cc/atom/' + board + '.xml')
+        if r.status_code != 200:
+            return False
+
         data = feedparser.parse(r.text)
 
         # board information
@@ -83,6 +88,8 @@ class PttXmlParser:
                     article_data['time'] = publish_time.strftime('%H:%M')
                     self.article_list.append(article_data)
 
+        return True
+
 
     def print_list_info(self):
         keyword_str = ''
@@ -114,41 +121,48 @@ class PttXmlParser:
                         show_all = True
                         break
 
+                # parse title of article
                 try:
-                    self.parse_ptt_board(board, show_all)
+                    if not self.parse_ptt_article(board, show_all):
+                        print 'Error: Cannot get articles in board "' + board + '"'
                 except Exception as e:
                     print e
-                    print '\tAn exception occurred at ' + datetime.now().strftime('%m/%d %H:%M:%S')
+                    print '\tError: An exception occurred at ' + datetime.now().strftime('%m/%d %H:%M:%S')
                     break
 
-                if len(self.article_list):
-                    mail_str = mail_str + board + u'板：\n'
-                    if got_board_list.find(board) == -1:
-                        if len(got_board_list) == 0:
-                            got_board_list = board
-                        else:
-                            got_board_list = got_board_list + '/' + board
-                    print '    ' + board + u'板：'
+                # check the articles that be selected
+                if len(self.article_list) == 0:
+                    continue
 
+                # create title of notify mail
+                mail_str = mail_str + board + u'板：\n'
+                if got_board_list.find(board) == -1:
+                    if len(got_board_list) == 0:
+                        got_board_list = board
+                    else:
+                        got_board_list = got_board_list + '/' + board
+                print '    ' + board + u'板：'
+
+                # create content of notify mail
                 for article in self.article_list:
                     mail_str = mail_str + '    ' + article['time'] + '   '  + article['author'] + ' ' + article['title'] + '\n'
                     mail_str = mail_str + '    ' + article['url'] + '\n\n'
                     print '        ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
                     print '        ' + article['url'] + '\n'
 
+            # save last updated time
             self.last_updated = datetime.now()
             f = open('last_updated', 'w')
             f.write(self.last_updated.strftime('%m/%d %H:%M:%S\n'))
             f.close()
 
-            if len(mail_str):
-#                print 'mail content: ' + mail_str
+            # send notity mail
+            if len(mail_str) > 0:
                 send_notify_mail('PTT [' + self.last_updated.strftime('%H:%M') + ']: ' + got_board_list, mail_str)
                 print 'notify mail sent (' + self.last_updated.strftime('%m/%d %H:%M') + ')'
 
             print 'updated at ' + self.last_updated.strftime('%m/%d %H:%M:%S')
             time.sleep(AUTO_UPDATE_SECS)
-#            os.system('clear || cls')
 
 
 def main():
