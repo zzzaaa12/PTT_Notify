@@ -62,7 +62,9 @@ class PttXmlParser:
             author = item['author']
             title = item['title']
             url = item['id']
-            publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%S+08:00')
+
+            ## format of item['published']: 2017-04-22T08:39:34+00:00
+            publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%S+00:00')
 
             # get and save last_updated_time
             if not got_last_updated_time:
