@@ -1,4 +1,4 @@
-# PTT article notifier
+# PTT Notify
 
 ## 簡介  
 
