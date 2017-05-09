@@ -15,19 +15,19 @@
 
 ## 使用方法  
 
-1. 在 setting.py 的下列變數填寫設定：
+### 1. 在 setting.py 的下列變數填寫設定：
 - AUTO_UPDATE_SECS：自動更新時間  
 - BOARD_LIST：填入偵測的英文看板名稱  
 - SHOW_ALL_BOARD：偵測所有文章的看板  
 - KEYWORD_LIST：偵測的標題關鍵字清單  
 - AUTHOR_LIST：偵測的作者清單  
 
-2. 在 send_notify.py 填寫mail寄件者與收件者資訊：
+### 2. 在 send_notify.py 填寫mail寄件者與收件者資訊：
 - FROM_ADDR：寄件者mail  
 - TO_ADDR：收件者mail  
 - SMTP_PASSWD：收件者mail帳號  
 
-3. 直接執行 ptt_notify.py 即可
+### 3. 直接執行 ptt_notify.py 即可
   
 
 ## 注意事項  
