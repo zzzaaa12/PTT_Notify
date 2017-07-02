@@ -17,10 +17,18 @@
 
 ### 1. 在 setting.py 的下列變數填寫設定：
 - AUTO_UPDATE_SECS：自動更新時間  
-- BOARD_LIST：填入偵測的英文看板名稱  
-- SHOW_ALL_BOARD：偵測所有文章的看板  
-- KEYWORD_LIST：偵測的標題關鍵字清單  
-- AUTHOR_LIST：偵測的作者清單  
+- SHOW_CONTENT：顯示文章內容  
+- G_KEYWORDS：所有看板共用的關鍵字清單  
+- G_AUTHORS：所有看板共用的作者清單  
+- SEND_EMAIL：是否寄送通知郵件  
+- BOARDS：所有看板的細部設定  
+  - name：看板名稱  
+  - authors：偵測的作者清單  
+  - keywords：偵測的關鍵字清單  
+  - show_all_articles：是否顯示所有文章  
+  - search_general_keyword：是否偵測共用關鍵字清單  
+  - search_general_author：是否偵測共用作者清單  
+  - search_content：是否偵測共用文章內的關鍵字  
 
 ### 2. 在 send_notify.py 填寫mail寄件者與收件者資訊：
 - FROM_ADDR：寄件者mail  
