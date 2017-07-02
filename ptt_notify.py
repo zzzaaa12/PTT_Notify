@@ -15,6 +15,7 @@ from setting import BOARD_LIST
 from setting import SHOW_ALL_BOARD
 from setting import KEYWORD_LIST
 from setting import AUTHOR_LIST
+from setting import SEND_EMAIL
 
 class PttXmlParser:
     def __init__(self):
@@ -68,8 +69,8 @@ class PttXmlParser:
             title = item['title']
             url = item['id']
 
-            ## format of item['published']: 2017-04-22T08:39:34+00:00
-            publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%S+00:00')
+            ## format of item['published']: 2017-04-22T08:39:34+08:00
+            publish_time = datetime.strptime(item['published'], '%Y-%m-%dT%H:%M:%S+08:00')
 
             # get and save last_updated_time
             if not got_last_updated_time:
@@ -134,21 +135,22 @@ class PttXmlParser:
                 if len(self.article_list) == 0:
                     continue
 
-                # create title of notify mail
-                mail_str = mail_str + board + u'板：\n'
-                if got_board_list.find(board) == -1:
-                    if len(got_board_list) == 0:
-                        got_board_list = board
-                    else:
-                        got_board_list = got_board_list + '/' + board
-                print '    ' + board + u'板：'
+                if SEND_EMAIL:
+                    # create title of notify mail
+                    mail_str = mail_str + board + u'板：\n'
+                    if got_board_list.find(board) == -1:
+                        if len(got_board_list) == 0:
+                            got_board_list = board
+                        else:
+                            got_board_list = got_board_list + '/' + board
+                    print '    ' + board + u'板：'
 
-                # create content of notify mail
-                for article in self.article_list:
-                    mail_str = mail_str + '    ' + article['time'] + '   '  + article['author'] + ' ' + article['title'] + '\n'
-                    mail_str = mail_str + '    ' + article['url'] + '\n\n'
-                    print '        ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
-                    print '        ' + article['url'] + '\n'
+                    # create content of notify mail
+                    for article in self.article_list:
+                        mail_str = mail_str + '    ' + article['time'] + '   '  + article['author'] + ' ' + article['title'] + '\n'
+                        mail_str = mail_str + '    ' + article['url'] + '\n\n'
+                        print '        ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
+                        print '        ' + article['url'] + '\n'
 
             # save last updated time
             self.last_updated = datetime.now()
@@ -157,7 +159,7 @@ class PttXmlParser:
             f.close()
 
             # send notity mail
-            if len(mail_str) > 0:
+            if SEND_EMAIL and len(mail_str) > 0:
                 send_notify_mail('PTT [' + self.last_updated.strftime('%H:%M') + ']: ' + got_board_list, mail_str)
                 print 'notify mail sent (' + self.last_updated.strftime('%m/%d %H:%M') + ')'
 
