@@ -4,10 +4,10 @@
 AUTO_UPDATE_SECS = 300
 
 # show content in article
-SHOW_CONTENT = True
+SHOW_CONTENT = False
 
-# send email for notify
-SEND_EMAIL = False
+# send notify mail
+SEND_EMAIL = True
 
 # general keywords and authors for all board
 G_KEYWORDS = [u'程式']
@@ -16,7 +16,16 @@ G_AUTHORS = ['SYSOP', 'PTT']
 # board settings
 BOARDS =  [
     {
-        "board_name": "Stock",
+        "name": "nb-shopping",
+        "authors": [],
+        "keywords": ['x220'],
+        "show_all_artciles": False,
+        "search_general_keyword": False,
+        "search_general_author": False,
+        "search_content": False,
+    },
+    {
+        "name": "Stock",
         "authors": ['chengwaye'],
         "keywords": [u'三大法人買賣'],
         "show_all_artciles": False,
@@ -25,7 +34,7 @@ BOARDS =  [
         "search_content": False,
     },
     {
-        "board_name": "HardwareSale",
+        "name": "HardwareSale",
         "authors": [],
         "keywords": ['SSD', u'硬碟'],
         "show_all_artciles": False,
@@ -34,7 +43,7 @@ BOARDS =  [
         "search_content": False,
     },
     {
-        "board_name": "CompBook",
+        "name": "CompBook",
         "authors": [],
         "keywords": [],
         "show_all_artciles": True,

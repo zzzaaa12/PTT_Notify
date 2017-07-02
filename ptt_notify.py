@@ -28,7 +28,7 @@ class PttXmlParser:
 
     def get_matches(self, board_name, title, author, content):
         for board in self.board_list:
-            if board['board_name'].lower() != board_name.lower():
+            if board['name'].lower() != board_name.lower():
                 continue
 
             # specific keywords
@@ -68,7 +68,7 @@ class PttXmlParser:
 
     def parse_ptt_article(self):
         for board in self.board_list:
-            r_url = 'https://www.ptt.cc/atom/' + board['board_name'] + '.xml'
+            r_url = 'https://www.ptt.cc/atom/' + board['name'] + '.xml'
             print 'get ' + r_url
             r = requests.get(r_url)
             if r.status_code != 200:
@@ -95,7 +95,7 @@ class PttXmlParser:
 
                 if (publish_time - board['last_updated']).total_seconds() > 0:
                     # parse articles and compare
-                    if board['show_all_artciles'] or self.get_matches(board['board_name'], title, author, content):
+                    if board['show_all_artciles'] or self.get_matches(board['name'], title, author, content):
                         article_data = {'board':'', 'author':'', 'title':'', 'url':'', 'content':''}
                         article_data['board'] = board
                         article_data['author'] = author
@@ -126,14 +126,14 @@ class PttXmlParser:
 
                 # create title of notify mail
                 if SEND_EMAIL:
-                    mail_str = mail_str + board['board_name'] + u'板：\n'
+                    mail_str = mail_str + board['name'] + u'板：\n'
 
                     # add board name in mail title
-                    if got_board_list.find(board['board_name']) == -1:
+                    if got_board_list.find(board['name']) == -1:
                         if len(got_board_list) == 0:
-                            got_board_list = board['board_name']
+                            got_board_list = board['name']
                         else:
-                            got_board_list = got_board_list + '/' + board['board_name']
+                            got_board_list = got_board_list + '/' + board['name']
 
                     for article in board['article_list']:
                         mail_str = mail_str + '    ' + article['time'] + '   '  + article['author'] + ' ' + article['title'] + '\n'
@@ -142,7 +142,7 @@ class PttXmlParser:
                             mail_str = mail_str + '\n    ' + article['content'].replace('\n', '\n    ') + '\n'
                         mail_str = mail_str + '\n\n'
 
-                print '\n    ' + board['board_name'] + u'板：'
+                print '\n    ' + board['name'] + u'板：'
                 for article in board['article_list']:
                     print '        ' + article['time'] + ' '  + article['author'] + ' ' + article['title']
                     print '        ' + article['url']
