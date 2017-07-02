@@ -126,14 +126,14 @@ class PttXmlParser:
 
                 # create title of notify mail
                 if SEND_EMAIL:
-                    mail_str = mail_str + board + u'板：\n'
+                    mail_str = mail_str + board['board_name'] + u'板：\n'
 
                     # add board name in mail title
                     if got_board_list.find(board['board_name']) == -1:
                         if len(got_board_list) == 0:
-                            got_board_list = board
+                            got_board_list = board['board_name']
                         else:
-                            got_board_list = got_board_list + '/' + board
+                            got_board_list = got_board_list + '/' + board['board_name']
 
                     for article in board['article_list']:
                         mail_str = mail_str + '    ' + article['time'] + '   '  + article['author'] + ' ' + article['title'] + '\n'
@@ -163,8 +163,14 @@ class PttXmlParser:
 
 
 def main():
-    parser = PttXmlParser()
-    parser.run()
+    try:
+        parser = PttXmlParser()
+        parser.run()
+    except Exception as e:
+        print 'Error: An exception occurred at ' + datetime.now().strftime('%m/%d %H:%M:%S') + ': \n' + str(e) + '\n'
+        if SEND_EMAIL:
+            mail_str = 'An exception occurred at ' + datetime.now().strftime('%m/%d %H:%M:%S') + ':\n' + str(e) + '\n'
+            send_notify_mail('Error of PTT Notify', mail_str)
 
 
 if __name__ == '__main__':
