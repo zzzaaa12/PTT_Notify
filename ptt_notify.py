@@ -109,7 +109,7 @@ class PttXmlParser:
                 if not got_last_updated_time:
                     got_last_updated_time = True
                     last_updated_time = publish_time
-            board['last_updated'] = publish_time
+            board['last_updated'] = last_updated_time
         return True
 
 
