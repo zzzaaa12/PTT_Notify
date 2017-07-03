@@ -2,7 +2,7 @@
 
 ## 簡介  
 
-本專案由 Python 撰寫，主要功能如下：  
+本專案由 Python 2 撰寫，主要功能如下：  
 - 定時讀取PTT特定看板的 RSS feed  
 - 過濾RSS內容的標題或作者  
 - 將最新的過濾結果以mail寄到收件者信箱  
@@ -12,6 +12,10 @@
 - ptt_notify.py：主程式  
 - setting.py：主設定檔  
 - send_notify.py: 發送mail的程式碼與設定檔  
+
+## 需安裝的Python套件  
+- requests
+- feedparser  
 
 ## 使用方法  
 
