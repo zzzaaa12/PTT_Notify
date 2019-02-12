@@ -34,33 +34,39 @@ class PttXmlParser:
             # specific keywords
             for keyword in board['keywords']:
                 if title.lower().find(keyword.lower()) > -1:
+                    print 'Got (specific key words)'
                     return True
 
             # specific authors
             for people in board['authors']:
                 if people.lower() == author.lower():
+                    print 'Got (specific authors)'
                     return True
 
             # general keywords
             if board['search_general_keyword']:
                 for keyword in G_KEYWORDS:
                     if title.lower().find(keyword.lower()) > -1:
+                        print 'Got (general keywords)'
                         return True
 
             # general authors
             if board['search_general_author']:
                 for people in G_AUTHORS:
                     if people.lower() == author.lower():
+                        print 'Got (general authers)'
                         return True
 
             # search content
             if board['search_content']:
                 for keyword in board['keywords']:
                     if content.lower().find(keyword.lower()) > -1:
+                        print 'Got (specific content)'
                         return True
                 if board['search_general_keyword']:
                     for keyword in board['keywords']:
                         if content.lower().find(keyword.lower()) > -1:
+                            print 'Got (general content)'
                             return True
 
         return False
@@ -70,7 +76,7 @@ class PttXmlParser:
         for board in self.board_list:
             r_url = 'https://www.ptt.cc/atom/' + board['name'] + '.xml'
             print 'get ' + r_url
-            r = requests.get(r_url)
+            r = requests.get(r_url, timeout=10)
             if r.status_code != 200:
                 print 'get url fail!!!'
                 return False
@@ -119,7 +125,13 @@ class PttXmlParser:
             got_board_list = ''
             print 'start at: ' + str(datetime.now().strftime('%m/%d %H:%M:%S\n'))
 
-            self.parse_ptt_article()
+            try:
+                self.parse_ptt_article()
+            except Exception as e:
+                print 'Error: An exception occurred at ' + datetime.now().strftime('%m/%d %H:%M:%S') + ': \n' + str(e) + '\n'
+                time.sleep(AUTO_UPDATE_SECS)
+                continue
+
             for board in self.board_list:
                 if len(board['article_list']) == 0:
                     continue
